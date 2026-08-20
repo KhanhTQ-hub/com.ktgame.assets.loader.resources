@@ -20,12 +20,12 @@ namespace com.ktgame.assets.loader.resources
 
 		public override AssetRequest<TAsset> LoadAsync<TAsset>(string address)
 		{
-			return _loader.Load<TAsset>(address);
+			return _loader.LoadAsync<TAsset>(address);
 		}
 
 		public override AssetRequest<Object> LoadAsync(string address)
 		{
-			return _loader.Load(address);
+			return _loader.LoadAsync(address);
 		}
 
 		public override void Release(AssetRequest request)

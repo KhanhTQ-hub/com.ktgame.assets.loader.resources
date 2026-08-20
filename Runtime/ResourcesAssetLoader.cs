@@ -25,12 +25,16 @@ namespace com.ktgame.assets.loader.resources
 
 			if (result == null)
 			{
-				var exception = new InvalidOperationException($"Requested asset（Key: {address}）was not found.");
+				var exception = new InvalidOperationException($"Requested asset (Key: {address}) was not found.");
 				setter.SetOperationException(exception);
+				setter.SetTask(UniTask.FromException<TAsset>(exception));
+			}
+			else
+			{
+				setter.SetTask(UniTask.FromResult(result));
 			}
 
 			setter.SetProgressFunc(() => 1.0f);
-			setter.SetTask(UniTask.FromResult(result));
 			return request;
 		}
 
@@ -59,11 +63,14 @@ namespace com.ktgame.assets.loader.resources
 
 				if (result == null)
 				{
-					var exception = new InvalidOperationException($"Requested asset（Key: {address}）was not found.");
+					var exception = new InvalidOperationException($"Requested asset (Key: {address}) was not found.");
 					setter.SetOperationException(exception);
+					utcs.TrySetException(exception);
 				}
-
-				utcs.TrySetResult(result);
+				else
+				{
+					utcs.TrySetResult(result);
+				}
 			};
 
 			setter.SetProgressFunc(() => req.progress);
@@ -76,6 +83,28 @@ namespace com.ktgame.assets.loader.resources
 			return LoadAsync<Object>(address);
 		}
 
-		public void Release(AssetRequest request) { }
+		public void Release(AssetRequest request)
+		{
+			if (request == null) return;
+
+			try
+			{
+				var property = request.GetType().GetProperty("Result");
+				if (property != null)
+				{
+					var asset = property.GetValue(request) as Object;
+					
+					// Chỉ Unload được các Asset tĩnh (Audio, Texture). Unity cấm Unload GameObject/Component.
+					if (asset != null && !(asset is GameObject) && !(asset is Component))
+					{
+						Resources.UnloadAsset(asset);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				Debug.LogWarning($"[ResourcesAssetLoader] Failed to release asset: {e.Message}");
+			}
+		}
 	}
 }
