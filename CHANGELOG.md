@@ -1,3 +1,10 @@
+## [1.0.4](https://github.com/KhanhTQ-Organization/com.ktgame.assets.loader.resources/compare/v1.0.3...v1.0.4) (2026-08-20)
+
+
+### Bug Fixes
+
+* fix load resource ([7139457](https://github.com/KhanhTQ-Organization/com.ktgame.assets.loader.resources/commit/71394570c9fe2a3d859d2bf80476f146e5ae66b6))
+
 ## [1.0.3](https://github.com/KhanhTQ-Organization/com.ktgame.assets.loader.resources/compare/v1.0.2...v1.0.3) (2026-05-06)
 
 
